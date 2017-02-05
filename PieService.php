@@ -9,11 +9,21 @@
             $req = json_decode($_POST("body"),true);
             if($req!=null){
                 //Handle Request
+                        
+
+                $voice=$req->originalRequest->data->text;
+               //Build response
+                $resObj = array("","");
+                //Start Response---------------------------->
+                header("Content-Type: application/json");
+                $resJson = json_encode($resObj);
+                echo $resJson;
                 
-                $voice="";
-                $resp="";
+                //Log request and response
+                $resp=$resJson;
                 $parms = array(new dbParameter("@voice",$voice),new dbParameter("@response",$resp));
-                $db->nonQueryParm("insert into request(voiceQuery,response) values('@voice','@response');");    
+                $db->nonQueryParm("insert into request(voiceQuery,response) values('@voice','@response');"); 
+                
             }
         }
      } catch (Exception $e)
