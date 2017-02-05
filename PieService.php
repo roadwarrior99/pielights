@@ -12,6 +12,8 @@
                         
 
                 $voice=$req->originalRequest->data->text;
+                $action=$req->result->action;
+                $light=$req->result->contexts->parameters->light;
                //Build response
                 $resObj = array("","");
                 //Start Response---------------------------->
