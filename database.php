@@ -26,7 +26,7 @@
             }
             return $sqlWParms;
         }
-        function safeNonQuery($sql,$parms){
+        function NonQueryParm($sql,$parms){
             $sqlWParms=parmReplace($sql,$parms);
             nonQuery($sqlWParms);
         }
@@ -57,5 +57,12 @@
                 mysql_db_query($dbName,$sql,$conn);
         }
     }//class db
-
+    class dbParameter{
+        public $name="";
+        public $value="";
+        function new($nm,$vl){
+            $name=$nm;
+            $value=$vl;
+        }
+    }
 ?>
