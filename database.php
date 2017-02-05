@@ -17,6 +17,23 @@
         function nonQuery($sql){
             mysql_query($sql,$conn);
         }
+
+        private function parmReplace($sql,$parms){
+                        $sqlWParms = $sql;
+            foreach($parms as $parm)
+            {
+                $sqlWParms = $sqlWParms.str_replace($parm.name,$parm.value);
+            }
+            return $sqlWParms;
+        }
+        function safeNonQuery($sql,$parms){
+            $sqlWParms=parmReplace($sql,$parms);
+            nonQuery($sqlWParms);
+        }
+        function getTableParm($sql,$parms){
+            $sqlWParms = parmReplace($sql,$parms);
+            getTable($sqlWParms);
+        }
         function getTable($sql){
             $result = mysql_db_query($dbName,$sql,$conn);
             return $result;
