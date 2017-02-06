@@ -19,7 +19,7 @@
         }
 
         private function parmReplace($sql,$parms){
-                        $sqlWParms = $sql;
+            $sqlWParms = $sql.str_replace("'","''");
             foreach($parms as $parm)
             {
                 $sqlWParms = $sqlWParms.str_replace($parm.name,$parm.value);
