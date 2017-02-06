@@ -4,7 +4,7 @@
         
      try{
         //Handle Request
-        $db = new db();
+        $db = new pieDB();
         if($_POST("body")<>null)
         {
             $req = json_decode($_POST("body"),true);

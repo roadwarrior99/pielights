@@ -1,5 +1,6 @@
 <?php
-    class db{
+    $db = new pieDB();
+    class pieDB{
         public $dbServer = "localhost";
         public $dbUser = "pieService";
         public $dbName ="pieService";
