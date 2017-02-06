@@ -1,10 +1,9 @@
 <?php
-        include 'database.php';
-        include 'tplink.php';
+        require 'database.php';
+        require 'tplink.php';
         
      try{
         //Handle Request
-        $db = new pieDB();
         if($_POST("body")<>null)
         {
             $req = json_decode($_POST("body"),true);

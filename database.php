@@ -1,6 +1,5 @@
 <?php
-    $db = new pieDB();
-    class pieDB{
+    class xpieDB{
         public $dbServer = "localhost";
         public $dbUser = "pieService";
         public $dbName ="pieService";
@@ -67,4 +66,6 @@
             $value=$vl;
         }
     }
+    $db = new xpieDB;
+    
 ?>
