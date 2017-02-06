@@ -15,7 +15,15 @@
                 $voice=$req->originalRequest->data->text;
                 $action=$req->result->action;
                 $light=$req->result->contexts->parameters->light;
-               
+                switch($action){
+                    case "TurnOnLight":
+                        TurnLight($light,true);
+                        break;
+                    case "TurnOfLight":
+                        TurnLight($light,false);
+                }
+                
+                
                //Build response
                 $resObj = array("","");
                 //Start Response---------------------------->
