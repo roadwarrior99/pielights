@@ -53,7 +53,8 @@
         }
         function InstallService(){
             $sql = 'create table error_log(id identity, occcured timestamp,error text);
-                create table request(id identity, occured timestamp, voiceQuery text,response text);';
+                create table request(id identity, occured timestamp, voiceQuery text,response text);
+                create table light(id identity, name text, ip text);';
                 mysql_db_query($dbName,$sql,$conn);
         }
     }//class db
