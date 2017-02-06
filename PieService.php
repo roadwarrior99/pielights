@@ -15,17 +15,26 @@
                 $voice=$req->originalRequest->data->text;
                 $action=$req->result->action;
                 $light=$req->result->contexts->parameters->light;
+                $speach='There was a problem processing your request.';
                 switch($action){
                     case "TurnOnLight":
                         TurnLight($light,true);
+                        $speach=$light + " was turned on.";
                         break;
                     case "TurnOfLight":
                         TurnLight($light,false);
+                        $speach=$light + " was turned off.";
                 }
                 
                 
                //Build response
-                $resObj = array("","");
+                
+                $resObj = array('speach'=> $speach
+                ,'displayText'=>$speach
+                ,'data'=>''
+                ,'contextOut'=>''
+                ,'source'=>'pielights');
+
                 //Start Response---------------------------->
                 header("Content-Type: application/json");
                 $resJson = json_encode($resObj);
