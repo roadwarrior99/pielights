@@ -1,16 +1,17 @@
 <?php
-        require 'database.php';
-        require 'tplink.php';
-        
-     try{
+        require_once 'settings.php';
+        require_once 'database.php';
+        require_once 'tplink.php';   
+     try{ 
+         if($install_tables){
+              $db->new();
+         }
         //Handle Request
-        if($_POST("body")<>null)
+        if(isset($_POST["body"]))
         {
-            $req = json_decode($_POST("body"),true);
-            if($req!=null){
+            $req = json_decode($_POST["body"],true);
+            if($req<>null){
                 //Handle Request
-                        
-
                 $voice=$req->originalRequest->data->text;
                 $action=$req->result->action;
                 $light=$req->result->contexts->parameters->light;
@@ -40,14 +41,20 @@
                 echo $resJson;
                 
                 //Log request and response
+                
                 $resp=$resJson;
                 $parms = array(new dbParameter("@voice",$voice),new dbParameter("@response",$resp));
                 $db->nonQueryParm("insert into request(voiceQuery,response) values('@voice','@response');"); 
                 
             }
         }
+        else 
+        {
+          if($debug)  echo 'No Body is home.';
+        }
      } catch (Exception $e)
-      {
+    {
+        if($debug) echo $e;
         $parms = array(new dbParameter('@error',$e));
         $db->nonQueryParm("insert into error_log(error) values('@error')",$parms);
         //echo 'Caught exception: ',  $e->getMessage(), "\n";

@@ -1,18 +1,19 @@
 <?php
-    class xpieDB{
-        public $dbServer = "localhost";
-        public $dbUser = "pieService";
-        public $dbName ="pieService";
-        private $dbPassword = "";
-        private $conn;
+    class xpieDB{ 
+        //DB related
         function new(){
-              $conn = new mysqli($servername, $username, $password);
+                $dbServer = "localhost";
+                $dbUser = "pieService";
+                $dbName ="pieService";
+                $dbPassword = "";
+
                 // Check connection
+                $conn = new mysqli($dbServer, $dbUser, $dbPassword);
                 if ($conn->connect_error) {
                         die("Connection failed: " . $conn->connect_error);
                 } 
                 mysql_connect($dbServer,$dbUser,$dbPassword,$conn);
-                if(isServiceInstalled != true) InstallService();
+                if(isServiceInstalled != true && $install_tables) InstallService();
         }//new
         function nonQuery($sql){
             mysql_query($sql,$conn);
@@ -67,5 +68,5 @@
         }
     }
     $db = new xpieDB;
-    
+    $db->new();
 ?>
