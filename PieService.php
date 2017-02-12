@@ -3,9 +3,6 @@
         require_once 'database.php';
         require_once 'tplink.php';   
      try{ 
-         if($install_tables){
-              $db->new();
-         }
         //Handle Request
         if(isset($_POST["body"]))
         {

@@ -1,9 +1,12 @@
 <?php
 $debug=true; 
 $install_tables=true;
-//DB related
 $dbServer = "localhost";
-$dbUser = "pieService";
-$dbName ="pieService";
-$dbPassword = "";
+$dbUser = "pieservice";
+$dbName ="pieservice";
+$dbPassword = "2NBoZdn*2HkHDD#48&6*8NKf";
+
+// Check connection
+global $conn;
+                 
 ?>
