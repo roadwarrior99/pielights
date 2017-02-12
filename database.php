@@ -38,52 +38,57 @@
             $result = mysql_db_query($dbName,$sql,$conn);
             return $result;
         } 
+        //Gimme a list of columns for given table.
+        //I think there is a native mysqli function that does this.
+        //My intent was just to check and see if the table existed and grabbing the columns seemed like it might be handy.
         function getTableColumns($name){
-            echo 'checking on table ' + $name;
+            //echo 'checking on table ' . $name . '</br>';
             $exists = false;
-            $smt = <<<SQL
-             select column_name from 'pieservice'.information_schema.columns where table_name='$name';
-SQL;
-            echo 'table col check:' + $smt;
+            $smt = "select column_name from information_schema.columns where table_name='". $name . "';";
+           // echo 'table col check:' . $smt;
             $result = $this->conn->query($smt);
-            if($result && $result->num_rows > 0 ){
+            if($this->conn->error !=null) echo $this->conn->error . '<br/>';
+            if($result!=null && $result->num_rows > 0 ){
                 $exists=true;
-                echo 'Table: ' + $name + ' exists.';
-            } else 'cry cry cry ' + $name;
+               // echo 'Table: ' . $name . ' exists.';
+            }
+            
             return $exists;
         }  
         function IsServiceInstalled(){
             $installed = true;
             if($this->getTableColumns('error_log')==null){
-               echo 'Table error_log is not installed<br/>';
+               //echo 'Table error_log is not installed<br/>';
                 $installed=false;
             }
             if($this->getTableColumns('request')==null)
             {
-                echo 'Table request is not installed <br/>';
+                //echo 'Table request is not installed <br/>';
                 $installed=false;
             }
             if($this->getTableColumns('light')==null){
-                echo 'Table light is not installed.<br/>';
+                //echo 'Table light is not installed.<br/>';
                 $installed=false;
                 }
             return $installed;
         }
         ///
         ///Does not work. Doesn't error but does not work.
+        //At some point should have the option to just install missing table.
         ///
         function InstallService(){
             echo 'Install Service called</br>';
             $sql = <<<SQL
-CREATE TABLE `pieservice`.`error_log` ( `id` INT NOT NULL , `timestamp` TIMESTAMP NOT NULL , `error_message` TEXT NOT NULL , `json` JSON NULL , PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB;
-
-create table `pieservice`.`request` (`id` int not null, `timestamp` timestamp NOT NULL,`request` JSON NULL, `voiceQuery` text,`response` JSON NULL);
-
-create table 'pieservice'.'light' (`id` int not null, `name` text, `ip` text);
+            CREATE TABLE `pieservice`.`error_log` ( `id` INT NOT NULL , `timestamp` TIMESTAMP NOT NULL , `error_message` TEXT NOT NULL , `json` JSON NULL , PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB; 
 SQL;
-                $result=$this->conn->query($sql);
-                echo $this->conn->error + '<br/>';
+            $result=$this->conn->query($sql);
+            if($this->conn->error!=null) echo $this->conn->error . '<br/>';
                // echo $result; 
+/*
+create table `pieservice`.`request` ( `id` int not null, `timestamp` TIMESTAMP , `input` JSON NULL, `voiceQuery` text,`response` JSON NULL);
+create table 'pieservice'.'light' (`id` int not null, `name` text, `ip` text);
+
+*/
         }
     }//class db
     class dbParameter{

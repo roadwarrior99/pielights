@@ -54,7 +54,7 @@
         if($debug) echo $e;
         $parms = array(new dbParameter('@error',$e));
         $db->nonQueryParm("insert into error_log(error) values('@error')",$parms);
-        //echo 'Caught exception: ',  $e->getMessage(), "\n";
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
 
 ?>
