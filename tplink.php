@@ -1,6 +1,6 @@
 <?php
 //require 'database.php';
-function TurnOnLight($name, $on){
+function TurnOnLight($name, $on,$db){
     $parms = array(new dbParameter("@name",$name));
     $lightDT = $db->getTableParm("select top 1 ip from lights where name='@name'",$parms);
     $switch = "on";

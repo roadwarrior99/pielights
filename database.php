@@ -16,28 +16,28 @@
                 if($this->IsServiceInstalled() <> true) $this->InstallService();
         }//new
         function nonQuery($sql){
-            mysql_query($sql,$conn);
+            $this->conn->query($sql);
         }
 
         private function parmReplace($sql,$parms){
-            $sqlWParms = $sql.str_replace("'","''");
+            $sqlWParms = str_replace("'","''",$sql);
             foreach($parms as $parm)
             {
-                $sqlWParms = $sqlWParms.str_replace($parm.name,$parm.value);
+                $sqlWParms = str_replace($parm->name,$parm->value,$sqlWParms);
             }
             return $sqlWParms;
         }
         function NonQueryParm($sql,$parms){
-            $sqlWParms=parmReplace($sql,$parms);
-            nonQuery($sqlWParms);
+            $sqlWParms=$this->parmReplace($sql,$parms);
+            $this->nonQuery($sqlWParms);
         }
         //this needs to be refactored
         function getTableParm($sql,$parms){
-            $sqlWParms = parmReplace($sql,$parms);
-            getTable($sqlWParms);
+            $sqlWParms = $this->parmReplace($sql,$parms);
+            $this->getTable($sqlWParms);
         }
         function getTable($sql){
-            $result = mysql_db_query($dbName,$sql,$conn);
+            $result = $this->conn->query($sql);
             return $result;
         } 
         //Gimme a list of columns for given table.

@@ -4,23 +4,25 @@
         require_once 'tplink.php';   
      try{ 
         //Handle Request
-        if(isset($_POST["body"]))
+        $body = file_get_contents('php://input');
+        if($body!=null)
         {
-            $req = json_decode($_POST["body"],true);
+            $req = json_decode($body,true);
             if($req<>null){
+                //var_dump($req);
                 //Handle Request
-                $voice=$req->originalRequest->data->text;
-                $action=$req->result->action;
-                $light=$req->result->contexts->parameters->light;
+                $voice=$req["originalRequest"]["data"]["inputs"][0]["raw_inputs"][0]["query"];
+                $action=$req["result"]["action"];
+                $light=$req["result"]["parameters"]["light"];
                 $speach='There was a problem processing your request.';
                 switch($action){
                     case "TurnOnLight":
-                        TurnLight($light,true);
-                        $speach=$light + " was turned on.";
+                        TurnOnLight($light,true,$db);
+                        $speach=$light . " was turned on.";
                         break;
-                    case "TurnOfLight":
-                        TurnLight($light,false);
-                        $speach=$light + " was turned off.";
+                    case "TurnOffLight":
+                        TurnOnLight($light,false,$db);
+                        $speach=$light . " was turned off.";
                 }
                 
                 
@@ -41,7 +43,7 @@
                 
                 $resp=$resJson;
                 $parms = array(new dbParameter("@voice",$voice),new dbParameter("@response",$resp));
-                $db->nonQueryParm("insert into request(voiceQuery,response) values('@voice','@response');"); 
+                $db->nonQueryParm("insert into request(voiceQuery,response) values('@voice','@response');",$parms); 
                 
             }
         }
@@ -54,7 +56,6 @@
         if($debug) echo $e;
         $parms = array(new dbParameter('@error',$e));
         $db->nonQueryParm("insert into error_log(error) values('@error')",$parms);
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        if($debug)echo 'Caught exception: '.  $e->getMessage();
         }
-
 ?>
