@@ -20,16 +20,21 @@
         }
 
         private function parmReplace($sql,$parms){
-            $sqlWParms = str_replace("'","''",$sql);
+            $sqlWParms = $sql;
             foreach($parms as $parm)
             {
-                $sqlWParms = str_replace($parm->name,$parm->value,$sqlWParms);
+                $sqlWParms = str_replace($parm->name,str_replace("'","''",$parm->value),$sqlWParms);
             }
             return $sqlWParms;
         }
         function NonQueryParm($sql,$parms){
             $sqlWParms=$this->parmReplace($sql,$parms);
             $this->nonQuery($sqlWParms);
+            if($this->conn->error!=null){
+                echo $sql;
+                echo $sqlWParms;
+                echo $this->conn->error;
+            }
         }
         //this needs to be refactored
         function getTableParm($sql,$parms){
@@ -97,17 +102,17 @@
             {
                 case "error_log":
                 $sql = <<<SQL
-                    CREATE TABLE `pieservice`.`error_log` ( `id` INT NOT NULL , `timestamp` TIMESTAMP NOT NULL , `error_message` TEXT NOT NULL , `json` JSON NULL , PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB; 
+                    CREATE TABLE `pieservice`.`error_log` ( `id` INT NOT NULL AUTO_INCREMENT, `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `error_message` TEXT NOT NULL , `json` JSON NULL , PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB; 
 SQL;
                 break;
                 case "request":
                     $sql = <<<SQL
-                    create table `pieservice`.`request` ( `id` int not null, `timestamp` TIMESTAMP , `input` JSON NULL, `voiceQuery` text,`response` JSON NULL);
+                    create table `pieservice`.`request` ( `id` int not null AUTO_INCREMENT, `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, `input` JSON NULL, `voiceQuery` text,`response` JSON NULL, PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB;
 SQL;
                 break;
                 case "light":
                     $sql = <<<SQL
-                    create table `pieservice`.`light` (`id` int not null, `name` text, `ip` text);
+                    create table `pieservice`.`light` (`id` int not null AUTO_INCREMENT, `name` text, `ip` text);
 SQL;
                 break;
             }

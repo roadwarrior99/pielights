@@ -42,8 +42,10 @@
                 //Log request and response
                 
                 $resp=$resJson;
-                $parms = array(new dbParameter("@voice",$voice),new dbParameter("@response",$resp));
-                $db->nonQueryParm("insert into request(voiceQuery,response) values('@voice','@response');",$parms); 
+                $parms = array(new dbParameter("@voice",$voice)
+                    ,new dbParameter("@response",$resp)
+                    ,new dbParameter("@input",$body));
+                $db->nonQueryParm("insert into request(voiceQuery,response,input) values('@voice','@response','@input');",$parms); 
                 
             }
         }
