@@ -6,6 +6,8 @@
         public $dbName ="pieservice";
         public $dbPassword = "";
         public $conn = mysqli;
+        public $tables = array("light","error_log","request");
+        public $missingTables = array();
        public function __construct(){
              $this->conn = new mysqli($this->dbServer, $this->dbUser, $this->dbPassword,$this->dbName);
                 if ($this->conn->connect_error) {
@@ -57,19 +59,14 @@
         }  
         function IsServiceInstalled(){
             $installed = true;
-            if($this->getTableColumns('error_log')==null){
-               //echo 'Table error_log is not installed<br/>';
-                $installed=false;
-            }
-            if($this->getTableColumns('request')==null)
+            foreach($this->tables as $table)
             {
-                //echo 'Table request is not installed <br/>';
-                $installed=false;
-            }
-            if($this->getTableColumns('light')==null){
-                //echo 'Table light is not installed.<br/>';
-                $installed=false;
+                if($this->getTableColumns($table)==null){
+                //echo 'Table error_log is not installed<br/>';
+                    $installed=false;
+                    array_push($this->missingTables,$table);
                 }
+            }
             return $installed;
         }
         ///
@@ -78,25 +75,55 @@
         ///
         function InstallService(){
             echo 'Install Service called</br>';
-            $sql = <<<SQL
-            CREATE TABLE `pieservice`.`error_log` ( `id` INT NOT NULL , `timestamp` TIMESTAMP NOT NULL , `error_message` TEXT NOT NULL , `json` JSON NULL , PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB; 
+            $success = true;//All table installs successful.
+            if($this->missingTables==null)$this->IsServiceInstalled();//If install service is called before list of missing tables is built.
+            foreach($this->missingTables as $table)
+            {
+                if($this->getTableColumns($table)==null){
+                    $sql = $this->GetCreateTableSQL($table);
+                    $result=$this->conn->query($sql);
+                    if($this->conn->error!=null){
+                         echo 'Table:' . $table . ' ' . $this->conn->error . '<br/>';
+                         $success= false;
+                    }
+                }
+            } 
+            return $success;
+        }
+        function GetCreateTableSQL($TableName)
+        {
+            $sql="";
+            switch($TableName)
+            {
+                case "error_log":
+                $sql = <<<SQL
+                    CREATE TABLE `pieservice`.`error_log` ( `id` INT NOT NULL , `timestamp` TIMESTAMP NOT NULL , `error_message` TEXT NOT NULL , `json` JSON NULL , PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB; 
 SQL;
-            $result=$this->conn->query($sql);
-            if($this->conn->error!=null) echo $this->conn->error . '<br/>';
-               // echo $result; 
-/*
-create table `pieservice`.`request` ( `id` int not null, `timestamp` TIMESTAMP , `input` JSON NULL, `voiceQuery` text,`response` JSON NULL);
-create table 'pieservice'.'light' (`id` int not null, `name` text, `ip` text);
-
-*/
+                break;
+                case "request":
+                    $sql = <<<SQL
+                    create table `pieservice`.`request` ( `id` int not null, `timestamp` TIMESTAMP , `input` JSON NULL, `voiceQuery` text,`response` JSON NULL);
+SQL;
+                break;
+                case "light":
+                    $sql = <<<SQL
+                    create table `pieservice`.`light` (`id` int not null, `name` text, `ip` text);
+SQL;
+                break;
+            }
+            return $sql;
         }
     }//class db
+    ///
+    ///Deprecated and unecessary
+    //This is now stock mysqli
+    ///
     class dbParameter{
         public $name="";
         public $value="";
-        function new($nm,$vl){
-            $name=$nm;
-            $value=$vl;
+        function __construct($nm,$vl){
+            $this->name=$nm;
+            $this->value=$vl;
         }
     }
     $db = new xpieDB;
