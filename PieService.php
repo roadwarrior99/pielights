@@ -1,9 +1,11 @@
 <?php
         require_once 'settings.php';
         require_once 'database.php';
-        require_once 'tplink.php';   
+        require_once 'tplink.php';
+        require_once 'secret.php';
      try{ 
         //Handle Request
+         $db = new xpieDB($dbPassword);
         $body = file_get_contents('php://input');
         if($body!=null)
         {

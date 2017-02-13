@@ -4,26 +4,26 @@
         public $dbServer = "localhost";
         public $dbUser = "pieservice";
         public $dbName ="pieservice";
-        public $dbPassword = "";
         public $conn = mysqli;
         public $tables = array("light","error_log","request");
         public $missingTables = array();
-       public function __construct(){
-             $this->conn = new mysqli($this->dbServer, $this->dbUser, $this->dbPassword,$this->dbName);
+       public function __construct($dbpassword){
+             $this->conn = new mysqli($this->dbServer, $this->dbUser, $dbPassword,$this->dbName);
                 if ($this->conn->connect_error) {
                         die("Connection failed: " . $this->conn->connect_error);
                 } 
                 if($this->IsServiceInstalled() <> true) $this->InstallService();
         }//new
         function nonQuery($sql){
-            $this->conn->query($sql);
+            $sql = $this->conn->real_escape_string($sql);
+            $this->conn->query($sql); 
         }
 
         private function parmReplace($sql,$parms){
             $sqlWParms = $sql;
             foreach($parms as $parm)
             {
-                $sqlWParms = str_replace($parm->name,str_replace("'","''",$parm->value),$sqlWParms);
+                $sqlWParms = str_replace($parm->name,str_replace("'","''",$this->conn->real_escape_string($parm->value)),$sqlWParms);
             }
             return $sqlWParms;
         }
@@ -42,6 +42,7 @@
             $this->getTable($sqlWParms);
         }
         function getTable($sql){
+            $sql = $this->conn->real_escape_string($sql);
             $result = $this->conn->query($sql);
             return $result;
         } 
@@ -74,10 +75,6 @@
             }
             return $installed;
         }
-        ///
-        ///Does not work. Doesn't error but does not work.
-        //At some point should have the option to just install missing table.
-        ///
         function InstallService(){
             echo 'Install Service called</br>';
             $success = true;//All table installs successful.

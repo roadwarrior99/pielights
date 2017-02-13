@@ -10,7 +10,7 @@
         "parameters": {
             "city": "Rome", 
             "name": "Ana",
-            "light": "Formal Room"
+            "light": "Front Room"
         }, 
         "contexts": [], 
         "resolvedQuery": "my name is Ana and I live in Rome", 
