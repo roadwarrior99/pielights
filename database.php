@@ -15,7 +15,7 @@
                 if($this->IsServiceInstalled() <> true) $this->InstallService();
         }//new
         function nonQuery($sql){
-            $sql = $this->conn->real_escape_string($sql);
+            //$sql = $this->conn->real_escape_string($sql);
             $this->conn->query($sql); 
         }
 
@@ -23,7 +23,7 @@
             $sqlWParms = $sql;
             foreach($parms as $parm)
             {
-                $sqlWParms = str_replace($parm->name,str_replace("'","''",$this->conn->real_escape_string($parm->value)),$sqlWParms);
+                $sqlWParms = str_replace($parm->name,str_replace("'","''",$parm->value),$sqlWParms);
             }
             return $sqlWParms;
         }
@@ -42,7 +42,7 @@
             $this->getTable($sqlWParms);
         }
         function getTable($sql){
-            $sql = $this->conn->real_escape_string($sql);
+            //$sql = $this->conn->real_escape_string($sql);
             $result = $this->conn->query($sql);
             return $result;
         } 
