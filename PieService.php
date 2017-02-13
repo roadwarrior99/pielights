@@ -5,55 +5,66 @@
         require_once 'secret.php';
      try{ 
         //Handle Request
-         $db = new xpieDB($dbPassword);
+        $db = new xpieDB($dbPassword);
         $body = file_get_contents('php://input');
-        if($body!=null)
+        $authorization = "";
+        if(isset($_SERVER['HTTP_AUTHORIZATION'])) $authorization=$_SERVER['HTTP_AUTHORIZATION'];
+        if($authorization==$AuthorizationToken)
         {
-            $req = json_decode($body,true);
-            if($req<>null){
-                //var_dump($req);
-                //Handle Request
-                $voice=$req["originalRequest"]["data"]["inputs"][0]["raw_inputs"][0]["query"];
-                $action=$req["result"]["action"];
-                $light=$req["result"]["parameters"]["light"];
-                $speach='There was a problem processing your request.';
-                switch($action){
-                    case "TurnOnLight":
-                        TurnOnLight($light,true,$db);
-                        $speach=$light . " was turned on.";
-                        break;
-                    case "TurnOffLight":
-                        TurnOnLight($light,false,$db);
-                        $speach=$light . " was turned off.";
-                }
-                
-                
-               //Build response
-                
-                $resObj = array('speach'=> $speach
-                ,'displayText'=>$speach
-                ,'data'=>''
-                ,'contextOut'=>''
-                ,'source'=>'pielights');
+            if($body!=null)
+            {
+                $req = json_decode($body,true);
+                if($req<>null){
+                    //var_dump($req);
+                    //Handle Request
+                    $voice=$req["originalRequest"]["data"]["inputs"][0]["raw_inputs"][0]["query"];
+                    $action=$req["result"]["action"];
+                    $light=$req["result"]["parameters"]["light"];
+                    $speach='There was a problem processing your request.';
+                    switch($action){
+                        case "TurnOnLight":
+                            TurnOnLight($light,true,$db);
+                            $speach=$light . " was turned on.";
+                            break;
+                        case "TurnOffLight":
+                            TurnOnLight($light,false,$db);
+                            $speach=$light . " was turned off.";
+                    }
+                    
+                    
+                //Build response
+                    
+                    $resObj = array('speach'=> $speach
+                    ,'displayText'=>$speach
+                    ,'data'=>''
+                    ,'contextOut'=>''
+                    ,'source'=>'pielights');
 
-                //Start Response---------------------------->
-                header("Content-Type: application/json");
-                $resJson = json_encode($resObj);
-                echo $resJson;
-                
-                //Log request and response
-                
-                $resp=$resJson;
-                $parms = array(new dbParameter("@voice",$voice)
-                    ,new dbParameter("@response",$resp)
-                    ,new dbParameter("@input",$body));
-                $db->nonQueryParm("insert into request(voiceQuery,response,input) values('@voice','@response','@input');",$parms); 
-                
+                    //Start Response---------------------------->
+                    header("Content-Type: application/json");
+                    $resJson = json_encode($resObj);
+                    echo $resJson;
+                    
+                    //Log request and response
+                    
+                    $resp=$resJson;
+                    $parms = array(new dbParameter("@voice",$voice)
+                        ,new dbParameter("@response",$resp)
+                        ,new dbParameter("@input",$body));
+                    $db->nonQueryParm("insert into request(voiceQuery,response,input) values('@voice','@response','@input');",$parms); 
+                    
+                }
+            }
+            else 
+            {
+            //no body   
+                if($debug)  echo 'No Body is home.';
             }
         }
-        else 
+        else
         {
-          if($debug)  echo 'No Body is home.';
+            http_response_code(401);
+            echo 'UnAuthorized';
         }
      } catch (Exception $e)
     {

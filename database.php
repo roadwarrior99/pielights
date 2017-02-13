@@ -7,7 +7,7 @@
         public $conn = mysqli;
         public $tables = array("light","error_log","request");
         public $missingTables = array();
-       public function __construct($dbpassword){
+       public function __construct($dbPassword){
              $this->conn = new mysqli($this->dbServer, $this->dbUser, $dbPassword,$this->dbName);
                 if ($this->conn->connect_error) {
                         die("Connection failed: " . $this->conn->connect_error);
@@ -128,6 +128,4 @@ SQL;
             $this->value=$vl;
         }
     }
-    $db = new xpieDB;
-    //$db->new();
 ?>
