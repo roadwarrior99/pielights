@@ -1,7 +1,7 @@
 <?php
     class xpieDB{
         //DB related
-        public $dbServer = "localhost";
+        public $dbServer = "192.168.1.95";
         public $dbUser = "pieservice";
         public $dbName ="pieservice";
         public $conn = mysqli;
@@ -99,17 +99,17 @@
             {
                 case "error_log":
                 $sql = <<<SQL
-                    CREATE TABLE `pieservice`.`error_log` ( `id` INT NOT NULL AUTO_INCREMENT, `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `error_message` TEXT NOT NULL , `json` JSON NULL , PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB; 
+                    CREATE TABLE `pieservice`.`error_log` ( `id` INT NOT NULL AUTO_INCREMENT, `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `error_message` TEXT NOT NULL , PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB; 
 SQL;
                 break;
                 case "request":
                     $sql = <<<SQL
-                    create table `pieservice`.`request` ( `id` int not null AUTO_INCREMENT, `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, `input` JSON NULL, `voiceQuery` text,`response` JSON NULL, PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB;
+                    create table `pieservice`.`request` ( `id` int not null AUTO_INCREMENT, `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, `input` text NULL, `voiceQuery` text ,`response` text NULL, PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB;
 SQL;
                 break;
                 case "light":
                     $sql = <<<SQL
-                    create table `pieservice`.`light` (`id` int not null AUTO_INCREMENT, `name` text, `ip` text);
+                    create table `pieservice`.`light` (`id` int not null AUTO_INCREMENT, `name` text, `ip` text, PRIMARY KEY (`id`) USING BTREE) ENGINE = InnoDB;
 SQL;
                 break;
             }
